@@ -1,0 +1,16 @@
+{% extends 'route/layout.html' %}
+{% block title %}
+    Main Page
+{% endblock %}
+{% block content %}
+    <div class="route-container">
+        {% for i in routes %}
+            <a href="/routes/{{ i.id }}">
+                <div class="route-card">
+                    <h3 class="route-name">{{ i.name }}</h3>
+                    <p class="route-short">{{ i.short_description }}</p>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

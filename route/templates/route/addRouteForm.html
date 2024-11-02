@@ -1,0 +1,100 @@
+{% extends 'route/layout.html' %}
+
+{% block title %}
+    Add Route Form
+{% endblock %}
+
+{% block content %}
+    <style>
+        #MapContainer {
+            height: 500px;
+            width: 100%;
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+    <div id="MapContainer">
+        <div id="map"></div>
+    </div>
+    <div class="page-container mt-5">
+        <div class="container page-center">
+            <form id="routeForm" action="/add-route/" class="form" method="POST">
+
+                {% csrf_token %}
+                <h2 class="jus-con-cen">Add Route Form</h2>
+                {{ form.name }}
+                {{ form.description }}
+                {{ form.short_description }}
+                {{ form.start }}
+                {{ form.end }}
+                {{ form.tags }}
+
+                <span><em>{{ message }}</em></span>
+                <button type="button" id="addRouteButton">Add Route</button>
+            </form>
+        </div>
+    </div>
+
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD527QpH-bF0qPHG5ey2yUH2YZ5f8LcvZA&callback=initMap">
+    </script>
+
+    <script>
+        let map;
+        const waypoints = []; // Масив для збереження вейпоінтів
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 49.83775294802427, lng: 24.026652509375054}, // Львів
+                zoom: 7
+            });
+
+            // Додаємо обробник кліка на карті
+            google.maps.event.addListener(map, 'click', function (event) {
+                const waypoint = {
+                    location: event.latLng.toUrlValue(),
+                    latitude: event.latLng.lat(),
+                    longitude: event.latLng.lng()
+                };
+                waypoints.push(waypoint); // Додаємо вейпоінт до масиву
+
+                // Додаємо маркер на карту
+                new google.maps.Marker({
+                    position: event.latLng,
+                    map: map,
+                    title: `Waypoint at ${waypoint.location}`
+                });
+            });
+        }
+
+        // Обробник кнопки для додавання маршруту
+        document.getElementById('addRouteButton').addEventListener('click', function () {
+            const form = document.getElementById('routeForm');
+            const formData = new FormData(form);
+
+            // Додаємо вейпоінти у форму
+            for (let i = 0; i < waypoints.length; i++) {
+                formData.append('waypoints[]', JSON.stringify(waypoints[i]));
+            }
+
+            fetch('/add-route/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = '/';
+                    } else {
+                        console.error('Error:', data);
+                    }
+                });
+        });
+    </script>
+{% endblock %}

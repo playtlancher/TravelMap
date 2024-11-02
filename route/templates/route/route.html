@@ -1,0 +1,70 @@
+{% extends 'route/layout.html' %}
+
+{% block title %}
+    {{ route.name }}
+{% endblock %}
+
+{% block content %}
+    <style>
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <div class="route-container">
+        <div class="page-center mt-5">
+            <div class="task-details-container">
+                <h1>{{ route.name }}</h1>
+                <p class="lead">{{ route.description }}</p>
+            </div>
+        </div>
+    </div>
+    <div id="map"></div>
+
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD527QpH-bF0qPHG5ey2yUH2YZ5f8LcvZA&callback=initMap&libraries=places">
+    </script>
+
+    <script>
+        function initMap() {
+            var directionsService = new google.maps.DirectionsService();
+            var directionsRenderer = new google.maps.DirectionsRenderer();
+            var firstWaypoint = {
+                lat: {{ route.start.latitude }},
+                lng: {{ route.start.longitude }}
+            };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: firstWaypoint,
+                zoom: 5
+            });
+            directionsRenderer.setMap(map);
+            var waypoints = [
+                {% for waypoint in waypoints %}
+                    {
+                        location: new google.maps.LatLng({{ waypoint.latitude }}, {{ waypoint.longitude }}),
+                        stopover: true
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            var request = {
+                origin: new google.maps.LatLng({{ route.start.latitude }}, {{ route.start.longitude }}),
+                destination: new google.maps.LatLng({{ route.end.latitude }}, {{ route.end.longitude }}),
+                waypoints: waypoints,
+                travelMode: google.maps.TravelMode.WALKING
+            };
+
+            directionsService.route(request, function (result) {
+                directionsRenderer.setDirections(result);
+            });
+        }
+    </script>
+{% endblock %}
