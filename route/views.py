@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+
+from comment.forms import AddCommentForm
+from comment.models import Comment
 from route.forms import AddRouteForm
 from .models import Route, Waypoint
 import json
@@ -13,9 +16,14 @@ def mainPage(request):
 
 def routeDetail(request, id):
     route = Route.objects.get(id=id)
+    form = AddCommentForm()
+    comments = Comment.objects.filter(route=id)
+
     context = {"route": route,
                "start_longitude": route.start["longitude"],
-               "start_latitude": route.start["latitude"],}
+               "start_latitude": route.start["latitude"],
+               "commentForm": form,
+               "comments": comments}
     if request.method == 'GET':
         waypoints = Waypoint.objects.filter(route=route)
         context["waypoints"] = waypoints

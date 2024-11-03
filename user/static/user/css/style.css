@@ -1,6 +1,6 @@
-:root{
+:root {
     --text-color: #ea6060;
-    --first-color: #333 ;
+    --first-color: #333;
     --second-color: ghostwhite;
 }
 
@@ -8,8 +8,6 @@ body {
     display: flex;
     flex-direction: column;
     background: ghostwhite;
-    height: 100%;
-    width: 100%;
     margin: 0;
     font-size: 100%;
     font-family: 'Poppins', Arial, serif;
@@ -20,10 +18,11 @@ body {
 
 }
 
-html {
+html, body {
     height: 100%;
     width: 100%;
 }
+
 .navbar {
     display: flex;
     background-color: var(--first-color);
@@ -101,6 +100,7 @@ html {
     gap: 20px;
     padding: 20px;
 }
+
 .route-name {
     font-size: 1.5rem;
     color: var(--first-color);

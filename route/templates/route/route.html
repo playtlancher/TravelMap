@@ -17,6 +17,71 @@
             margin: 0;
             padding: 0;
         }
+
+        .comments-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .comments-section h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        #comments {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .comment {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .comment strong {
+            color: #333;
+        }
+
+        .comment small {
+            display: block;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
     </style>
 
     <div class="route-container">
@@ -28,6 +93,27 @@
         </div>
     </div>
     <div id="map"></div>
+    <div class="comments-section">
+        <h2>Comments</h2>
+        <div id="comments">
+            {% for comment in comments %}
+                <div class="comment">
+                    <strong>{{ comment.user.username }}</strong>: {{ comment.content }} <br>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if request.user.username != "" %}
+            <p>You need to be logged in to add a comment. Please <a href="{% url 'login' %}">log in</a>.</p>
+            <form method="post" action="{% url 'addComment' route.id %}">
+                {% csrf_token %}
+                {{ commentForm.content }}
+                <button type="submit">Add comment</button>
+            </form>
+        {% else %}
+            <p>You need to be logged in to add a comment. Please <a href="{% url 'login' %}">log in</a>.</p>
+        {% endif %}
+    </div>
 
     <script async
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD527QpH-bF0qPHG5ey2yUH2YZ5f8LcvZA&callback=initMap&libraries=places">
