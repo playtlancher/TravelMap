@@ -19,6 +19,17 @@
     <div id="MapContainer">
         <div id="map"></div>
     </div>
+    <div id="waypoints-list">
+        <h3>Waypoints:</h3>
+        <ul>
+            {% for waypoint in waypoints %}
+                <li>
+                    {{ waypoint.name }}
+                    <button onclick="removeWaypoint({{ forloop.counter0 }})">Remove</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
     <div class="page-container mt-5">
         <div class="container page-center">
             <form id="routeForm" action="/add-route/" class="form" method="POST">
@@ -44,24 +55,22 @@
 
     <script>
         let map;
-        const waypoints = []; // Масив для збереження вейпоінтів
+        const waypoints = [];
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 49.83775294802427, lng: 24.026652509375054}, // Львів
+                center: {lat: 49.83775294802427, lng: 24.026652509375054},
                 zoom: 7
             });
 
-            // Додаємо обробник кліка на карті
             google.maps.event.addListener(map, 'click', function (event) {
                 const waypoint = {
                     location: event.latLng.toUrlValue(),
                     latitude: event.latLng.lat(),
                     longitude: event.latLng.lng()
                 };
-                waypoints.push(waypoint); // Додаємо вейпоінт до масиву
+                waypoints.push(waypoint);
 
-                // Додаємо маркер на карту
                 new google.maps.Marker({
                     position: event.latLng,
                     map: map,
@@ -70,12 +79,10 @@
             });
         }
 
-        // Обробник кнопки для додавання маршруту
         document.getElementById('addRouteButton').addEventListener('click', function () {
             const form = document.getElementById('routeForm');
             const formData = new FormData(form);
 
-            // Додаємо вейпоінти у форму
             for (let i = 0; i < waypoints.length; i++) {
                 formData.append('waypoints[]', JSON.stringify(waypoints[i]));
             }
@@ -96,5 +103,10 @@
                     }
                 });
         });
+
+        function removeWaypoint(index) {
+            waypoints.splice(index, 1);
+            renderRoute();
+        }
     </script>
 {% endblock %}

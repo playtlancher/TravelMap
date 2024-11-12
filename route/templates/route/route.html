@@ -7,112 +7,68 @@
 {% block content %}
     <style>
         #map {
-            height: 100%;
+            height: auto;
+            min-height: 400px;
             width: 100%;
-        }
-
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        .comments-section {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .comments-section h2 {
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-
-        #comments {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
-
-        .comment {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .comment strong {
-            color: #333;
-        }
-
-        .comment small {
-            display: block;
-            color: #888;
-            font-size: 0.9em;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        textarea {
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        button {
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #218838;
         }
     </style>
 
-    <div class="route-container">
-        <div class="page-center mt-5">
-            <div class="task-details-container">
-                <h1>{{ route.name }}</h1>
-                <p class="lead">{{ route.description }}</p>
+    <div class="mt-5 mb-4">
+        <h1 class="text-center">{{ route.name }}</h1>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4 row-sm">
+                <div id="map" class=" justify-content-center"></div>
             </div>
+            <div class="col-lg-8 row-sm">
+                <p class="text-center ">{{ route.description }}</p></div>
         </div>
     </div>
-    <div id="map"></div>
-    <div class="comments-section">
-        <h2>Comments</h2>
-        <div id="comments">
-            {% for comment in comments %}
-                <div class="comment">
-                    <strong>{{ comment.user.username }}</strong>: {{ comment.content }} <br>
-                </div>
-            {% endfor %}
-        </div>
 
-        {% if request.user.username != "" %}
-            <p>You need to be logged in to add a comment. Please <a href="{% url 'login' %}">log in</a>.</p>
+
+        <div class="container-fluid">
+            <h2>Comments</h2>
+            <div id="comments" class="card p-3 mb-3 comment-block">
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    {% for comment in comments %}
+                        <tr>
+                            <th scope="row"><strong>{{ comment.user.username }}:</strong></th>
+                            <td>{{ comment.content }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    {% if request.user.username != "" %}
+        <div class="container-fluid">
             <form method="post" action="{% url 'addComment' route.id %}">
                 {% csrf_token %}
                 {{ commentForm.content }}
-                <button type="submit">Add comment</button>
+                <div class="flex-column">
+                    <button id="comment-cancel-button" onclick="clearField(event)" type="button" style="display: none">
+                        Cancel
+                    </button>
+                    <button id="comment-add-button" style="display: none" type="submit">Add</button>
+                </div>
+
             </form>
-        {% else %}
-            <p>You need to be logged in to add a comment. Please <a href="{% url 'login' %}">log in</a>.</p>
-        {% endif %}
+        </div>
+
+    {% else %}
+        <p>You need to be logged in to add a comment. Please <a href="{% url 'login' %}">log in</a>.</p>
+    {% endif %}
     </div>
 
     <script async
@@ -151,6 +107,30 @@
             directionsService.route(request, function (result) {
                 directionsRenderer.setDirections(result);
             });
+        }
+
+        function showButton() {
+            button = document.getElementById("comment-add-button")
+            button.style.display = "flex"
+            button = document.getElementById("comment-cancel-button")
+            button.style.display = "flex"
+        }
+
+        function hideButton() {
+            window.setTimeout(function () {
+                button = document.getElementById("comment-add-button")
+                button.style.display = "none"
+                button = document.getElementById("comment-cancel-button")
+                button.style.display = "none"
+            }, 100)
+
+        }
+
+        function clearField(event) {
+            event.preventDefault();
+            field = document.getElementById('comment-content');
+            field.value = "";
+
         }
     </script>
 {% endblock %}

@@ -10,10 +10,13 @@ class AddCommentForm(ModelForm):
         fields = ["content"]
         widgets = {
             "content": Textarea(attrs={
-                'id': 'shortDescription',
+                'id': 'comment-content',
                 'class': 'form-control',
                 'type': 'text',
-                'name': 'shortDescription',
-                'placeholder': 'Comment text',
+                'name': 'comment-content',
+                'placeholder': 'Add a comment...',
+                'onfocus': 'showButton()',
+                'onfocusout': 'hideButton()',
+                'rows': '3'
             })
         }

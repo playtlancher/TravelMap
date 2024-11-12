@@ -8,10 +8,10 @@ from .models import Route, Waypoint
 import json
 
 
-def mainPage(request):
+def routes(request):
     routes = Route.objects.all()
     context = {"routes": routes}
-    return render(request, 'route/mainPage.html', context)
+    return render(request, 'route/routes.html', context)
 
 
 def routeDetail(request, id):
