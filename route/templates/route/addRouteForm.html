@@ -19,32 +19,27 @@
     <div id="MapContainer">
         <div id="map"></div>
     </div>
-    <div id="waypoints-list">
-        <h3>Waypoints:</h3>
-        <ul>
-            {% for waypoint in waypoints %}
-                <li>
-                    {{ waypoint.name }}
-                    <button onclick="removeWaypoint({{ forloop.counter0 }})">Remove</button>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="page-container mt-5">
-        <div class="container page-center">
-            <form id="routeForm" action="/add-route/" class="form" method="POST">
-
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="text-center">
+            <form method="post" id="routeForm" action="/add-route/" class="form px-5 pt-5 pb-5">
+                <h1 class="mb-5">Welcome</h1>
                 {% csrf_token %}
-                <h2 class="jus-con-cen">Add Route Form</h2>
-                {{ form.name }}
-                {{ form.description }}
-                {{ form.short_description }}
-                {{ form.start }}
-                {{ form.end }}
-                {{ form.tags }}
+                <div class="form-group p-1 mb-3">
+                    {{ form.name }}
+                </div>
+                <div class="form-group p-1 mb-3">
+                    {{ form.description }}
+                </div>
+                <div class="form-group p-1 mb-3">
+                    {{ form.short_description }}
+                </div>
+                <div class="form-group p-1 mb-3">
+                    <button onclick="removeWaypoint(event)" id="delete-waypoint-btn" class="btn btn-outline-danger">Delete
+                        last waypoint
+                    </button>
+                    <button id="addRouteButton" type="submit" class="btn btn-outline-danger">Add Route</button>
+                </div>
 
-                <span><em>{{ message }}</em></span>
-                <button type="button" id="addRouteButton">Add Route</button>
             </form>
         </div>
     </div>
@@ -54,6 +49,7 @@
     </script>
 
     <script>
+        let markers = [];
         let map;
         const waypoints = [];
 
@@ -71,11 +67,13 @@
                 };
                 waypoints.push(waypoint);
 
-                new google.maps.Marker({
+                const marker = new google.maps.Marker({
                     position: event.latLng,
                     map: map,
                     title: `Waypoint at ${waypoint.location}`
                 });
+
+                markers.push(marker);
             });
         }
 
@@ -104,9 +102,15 @@
                 });
         });
 
-        function removeWaypoint(index) {
-            waypoints.splice(index, 1);
-            renderRoute();
+        function removeWaypoint(event) {
+            event.preventDefault()
+            if (waypoints.length > 0) {
+                waypoints.pop();
+                marker = markers.pop()
+                marker.setMap(null);
+                console.log("work")
+            }
+
         }
     </script>
 {% endblock %}

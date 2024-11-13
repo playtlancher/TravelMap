@@ -17,7 +17,7 @@ def loginHandler(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('mainPage')
+            return redirect('routes')
         else:
             context = {'form': form, "error": "Something went wrong"}
     return render(request, 'user/login.html', context)

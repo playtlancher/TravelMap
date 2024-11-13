@@ -14,14 +14,14 @@ class LoginForm(ModelForm):
         widgets = {
             "username": Input(attrs={
                 'id': 'username',
-                'class': 'input100',
+                'class': 'form-control',
                 'type': 'text',
                 'name': 'username',
                 'placeholder': 'Username',
             }),
             "password": Input(attrs={
                 'id': 'password',
-                'class': 'input100',
+                'class': 'form-control',
                 'type': 'password',
                 'name': 'password',
                 'placeholder': 'Password',
@@ -30,9 +30,9 @@ class LoginForm(ModelForm):
 
 
 class RegisterForm(UserCreationForm):
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input100',
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control',
                                                                   'placeholder': 'Password',}))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input100',
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control',
                                                                   'placeholder': 'Confirm Password'}))
 
     class Meta:
@@ -42,7 +42,7 @@ class RegisterForm(UserCreationForm):
         widgets = {
             "username": Input(attrs={
                 'id': 'username',
-                'class': 'input100',
+                'class': 'form-control',
                 'type': 'text',
                 'name': 'username',
                 'placeholder': 'Username',

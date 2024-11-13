@@ -44,3 +44,14 @@ footer a:hover{
     max-height: 200px;
     overflow: auto;
 }
+.form{
+    background: white !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 15px;
+}
+.switcher{
+    transition: ease-in-out 0.2s
+}
+.switcher:hover{
+    color: #d67676 !important;
+}

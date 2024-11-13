@@ -32,29 +32,32 @@ def routeDetail(request, id):
 
 
 def addRoute(request):
-    form = AddRouteForm()
-    context = {"form": form}
-    if request.method == 'GET':
-        return render(request, "route/addRouteForm.html",context)
-    if request.method == 'POST':
-        form = AddRouteForm(request.POST)
-        if form.is_valid():
-            route = form.save(commit=False)
-            waypoints_data = request.POST.getlist('waypoints[]')
-            route.start = json.loads(waypoints_data.pop(0))
-            route.end = json.loads(waypoints_data.pop(-1))
-            route.user = request.user
-            route.save()
-            for waypoint_data in waypoints_data:
-                waypoint = json.loads(waypoint_data)
-                Waypoint.objects.create(
-                    route=route,
-                    location=waypoint['location'],
-                    latitude=waypoint['latitude'],
-                    longitude=waypoint['longitude']
-                )
+    if request.user.is_superuser:
+        form = AddRouteForm()
+        context = {"form": form}
+        if request.method == 'GET':
+            return render(request, "route/addRouteForm.html", context)
+        if request.method == 'POST':
+            form = AddRouteForm(request.POST)
+            if form.is_valid():
+                route = form.save(commit=False)
+                waypoints_data = request.POST.getlist('waypoints[]')
+                route.start = json.loads(waypoints_data.pop(0))
+                route.end = json.loads(waypoints_data.pop(-1))
+                route.user = request.user
+                route.save()
+                for waypoint_data in waypoints_data:
+                    waypoint = json.loads(waypoint_data)
+                    Waypoint.objects.create(
+                        route=route,
+                        location=waypoint['location'],
+                        latitude=waypoint['latitude'],
+                        longitude=waypoint['longitude']
+                    )
 
-            return JsonResponse({'status': 'success'})
-        else:
-            print(form.errors)
+                return JsonResponse({'status': 'success'})
+            else:
+                print(form.errors)
+    else:
+        return redirect('routes')
     return JsonResponse({'status': 'error'}, status=400)

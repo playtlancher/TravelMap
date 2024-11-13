@@ -21,6 +21,7 @@ class AddRouteForm(ModelForm):
                 'type': 'text',
                 'name': 'routerDescription',
                 'placeholder': 'Description',
+                'rows': 2,
             }),
             "short_description": Textarea(attrs={
                 'id': 'shortDescription',
@@ -28,5 +29,6 @@ class AddRouteForm(ModelForm):
                 'type': 'text',
                 'name': 'shortDescription',
                 'placeholder': 'Short description',
+                'rows': 2,
             })
         }
